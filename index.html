@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Speed Wheels - Customer Registration</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f0ea;
+            margin: 0;
+            color: #222;
+        }
+
+        header, footer {
+            background: #15191f;
+            color: white;
+            text-align: center;
+            padding: 22px;
+        }
+
+        header h1 {
+            color: #ed2939;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000012;
+        }
+
+        h2 {
+            color: #e32636;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 9px 0 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #e32636;
+        }
+
+        .options {
+            margin: 12px 0 20px;
+        }
+
+        .options label {
+            display: inline-flex;
+            align-items: center;
+            margin: 8px 15px 8px 0;
+            font-weight: normal;
+        }
+
+        .options input {
+            width: auto;
+            margin: 0 7px 0 0;
+        }
+
+        button {
+            background: #15191f;
+            color: white;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e32636;
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 15px;
+            background: #f3f0ea;
+            border-radius: 6px;
+        }
+
+        .customer {
+            background: #f3f0ea;
+            padding: 15px;
+            margin: 12px 0;
+            border-left: 5px solid #e32636;
+            border-radius: 5px;
+        }
+
+        .customer h3 {
+            color: #e32636;
+        }
+
+        .empty {
+            color: #777;
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                margin: 15px;
+                padding: 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>SPEED WHEELS</h1>
+
+    <p>Premium Bike Showroom</p>
+
+    <p>Customer Registration System</p>
+
+</header>
+
+
+<div class="container">
+
+    <h2>Customer Registration</h2>
+
+    <p>Register with Speed Wheels and explore our premium motorcycles.</p>
+
+    <form id="regForm">
+
+        <label>Customer Name:</label>
+
+        <input type="text" name="name"
+               pattern="[A-Za-z ]+"
+               required placeholder="Enter your full name">
+
+        <label>Password:</label>
+
+        <input type="password" name="password"
+               minlength="8"
+               required placeholder="Minimum 8 characters">
+
+        <label>Age:</label>
+
+        <input type="number" name="age"
+               min="18" max="30"
+               required placeholder="Enter your age">
+
+        <label>Mobile Number:</label>
+
+        <input type="tel" name="mobile"
+               pattern="[0-9]{10}"
+               required placeholder="Enter 10 digit mobile number">
+
+        <label>Email Address:</label>
+
+        <input type="email" name="email"
+               required placeholder="Enter your email">
+
+        <label>Gender:</label>
+
+        <div class="options">
+
+            <label>
+                <input type="radio" name="gender"
+                       value="Male" required>
+                Male
+            </label>
+
+            <label>
+                <input type="radio" name="gender"
+                       value="Female">
+                Female
+            </label>
+
+        </div>
+
+
+        <label>Select State:</label>
+
+        <select name="state" required>
+
+            <option value="">Select State</option>
+
+            <option>Tamil Nadu</option>
+
+            <option>Kerala</option>
+
+            <option>Karnataka</option>
+
+            <option>Andhra Pradesh</option>
+
+            <option>Telangana</option>
+
+        </select>
+
+
+        <label>Interested Services:</label>
+
+        <div class="options">
+
+            <label>
+                <input type="checkbox" name="services"
+                       value="Test Ride">
+                Test Ride
+            </label>
+
+            <label>
+                <input type="checkbox" name="services"
+                       value="Bike Accessories">
+                Bike Accessories
+            </label>
+
+            <label>
+                <input type="checkbox" name="services"
+                       value="Insurance">
+                Insurance
+            </label>
+
+            <label>
+                <input type="checkbox" name="services"
+                       value="Bike Finance">
+                Bike Finance
+            </label>
+
+        </div>
+
+
+        <button type="submit">Register Now</button>
+
+    </form>
+
+    <div class="result" id="msg">
+        Registration status will appear here.
+    </div>
+
+</div>
+
+
+<!-- REGISTERED CUSTOMERS -->
+
+<div class="container">
+
+    <h2>Registered Customers</h2>
+
+    <div id="customers">
+
+        <p class="empty">Loading customer details...</p>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <h3>SPEED WHEELS BIKE SHOWROOM</h3>
+
+    <p>Customer Registration System</p>
+
+    <p>© 2026 Speed Wheels. All Rights Reserved.</p>
+
+</footer>
+
+
+<script>
+
+    const form = document.getElementById("regForm");
+
+
+    // CUSTOMER REGISTRATION
+
+    form.onsubmit = async function(e) {
+
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(form));
+
+        data.services = [...form.querySelectorAll(
+            'input[name="services"]:checked'
+        )].map(x => x.value);
+
+
+        try {
+
+            const res = await fetch("/register", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(data)
+
+            });
+
+
+            const result = await res.json();
+
+            document.getElementById("msg").innerText =
+                result.message;
+
+
+            if (res.ok) {
+
+                form.reset();
+
+                loadCustomers();
+
+            }
+
+        }
+
+        catch(error) {
+
+            document.getElementById("msg").innerText =
+                "Unable to connect to the server.";
+
+        }
+
+    };
+
+
+    // DISPLAY REGISTERED CUSTOMERS
+
+    async function loadCustomers() {
+
+        try {
+
+            const res = await fetch("/customers");
+
+            if (!res.ok) {
+                throw new Error("Unable to load customers");
+            }
+
+            const users = await res.json();
+
+            const container =
+                document.getElementById("customers");
+
+            container.replaceChildren();
+
+            if (users.length === 0) {
+
+                const p = document.createElement("p");
+
+                p.className = "empty";
+
+                p.textContent = "No registered customers available.";
+
+                container.appendChild(p);
+
+                return;
+
+            }
+
+
+            users.forEach(function(u) {
+
+                const card = document.createElement("div");
+
+                card.className = "customer";
+
+                const name = document.createElement("h3");
+
+                name.textContent = u.name;
+
+                const email = document.createElement("p");
+
+                email.textContent = "Email: " + u.email;
+
+                const mobile = document.createElement("p");
+
+                mobile.textContent = "Mobile: " + u.mobile;
+
+                const services = document.createElement("p");
+
+                services.textContent =
+                    "Interested Services: " + u.services.join(", ");
+
+                card.append(name, email, mobile, services);
+
+                container.appendChild(card);
+
+            });
+
+        }
+
+        catch(error) {
+
+            document.getElementById("customers").textContent =
+                "Unable to retrieve customer details.";
+
+        }
+
+    }
+
+
+    // LOAD CUSTOMERS WHEN PAGE OPENS
+
+    loadCustomers();
+
+</script>
+
+</body>
+</html>
